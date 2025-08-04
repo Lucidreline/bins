@@ -44,13 +44,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Connect and deploy to cluster
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.0.10
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_DEPLOY_KEY }}
           port: 2222
           script: |
-            sudo kubectl set image deployment/bins bins=lucidreline/bins:latest
-            sudo kubectl rollout restart deployment/bins
-            sudo kubectl rollout status deployment/bins
+            set -e
+            echo "::group::🚀 Deploying to k3s"
+            export KUBECONFIG=~/kubeconfig
+            kubectl set image deployment/bins bins=lucidreline/bins:latest
+            kubectl rollout restart deployment/bins
+            kubectl rollout status deployment/bins --timeout=15m
+            echo "::endgroup::"
