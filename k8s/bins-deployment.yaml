@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bins
+  labels:
+    app: bins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bins
+  template:
+    metadata:
+      labels:
+        app: bins
+    spec:
+      containers:
+        - name: bins
+          image: lucidreline/bins:latest
+          ports:
+            - containerPort: 80
